@@ -4,137 +4,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Juego Tablero</title>
-  <style>
-    table {
-      border-collapse: collapse;
-    }
-
-    td {
-      width: 30px;
-      height: 30px;
-      border: 1px solid black;
-      text-align: center;
-      cursor: pointer;
-    }
-  </style>
-</head>
-
-<body>
-  <label for="filas">Filas:</label>
-  <input type="number" id="filas" required>
-  <label for="columnas">Columnas:</label>
-  <input type="number" id="columnas" required>
-  <button onclick="crearTablero()">Crear tablero</button>
-  <br><br>
-  <div id="tablero"></div>
-  <br>
-  <button onclick="contar()">Contar</button>
-  <p id="resultado"></p>
-
-  <script>
-    function crearTablero() {
-      let filas = document.getElementById("filas").value;
-      let columnas = document.getElementById("columnas").value;
-
-      if (filas <= 0 || columnas <= 0) {
-        alert("Debes introducir valores válidos");
-        return;
-      }
-
-      let tablero = document.getElementById("tablero");
-      tablero.innerHTML = "";
-
-      let tabla = document.createElement("table");
-
-      for (let i = 0; i < filas; i++) {
-        let fila = document.createElement("tr");
-        for (let j = 0; j < columnas; j++) {
-          let celda = document.createElement("td");
-          celda.onclick = function () {
-            this.textContent = this.textContent === "X" ? "O" : "X";
-          };
-          let aleatorio = Math.random() > 0.5 ? "X" : "O";
-          celda.textContent = aleatorio;
-          fila.appendChild(celda);
-        }
-        tabla.appendChild(fila);
-      }
-      tablero.appendChild(tabla);
-    }
-
-    function contar() {
-      let tablero = document.getElementById("tablero");
-      let celdas = tablero.getElementsByTagName("td");
-      let contadorX = 0;
-      let contadorO = 0;
-
-      for (let i = 0; i < celdas.length; i++) {
-        if (celdas[i].textContent === "X") {
-          contadorX++;
-        } else if (celdas[i].textContent === "O") {
-          contadorO++;
-        }
-      }
-      document.getElementById("resultado").textContent = "Xs: " + contadorX + ", Os: " + contadorO;
-    }
-  </script>
-</body>
-
-</html>
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
 
 <body>
   <h1>JuegoXO</h1>
   <table></table>
-  <button onclick="countXO()">Contar</button>
-  <p>Número de Xs=<span></span> y número de Os=<span></span></p>
+  <button onclick="countXO();">Contar</button>
+  <p>Número de Xs=<span id="equis"></span> y número de Os=<span id="oes"></span></p>
   <script>
-    let row, columns;
+    let rows, columns;
     do {
-      rows = parseInt(prompt('Indica el número de filas:'))
-      columns = parseInt(prompt('Indica el número de columnas:'))
+      rows = parseInt(prompt('Indica el número de filas: '));
+      columns = parseInt(prompt('Indica el número de columnas: '));
     } while (isNaN(rows) || isNaN(columns) || rows <= 0 || columns <= 0);
-    
-    const table = document.querySelector('table');
 
+    const table = document.querySelector('table');
     for (let i = 0; i < rows; i++) {
       let tr = document.createElement('tr');
       table.append(tr);
       for (let j = 0; j < columns; j++) {
-        let td = documnt.createElement('td');
+        let td = document.createElement('td');
         let xo = Math.floor(Math.random() * 2) ? "X" : "O";
         td.textContent = xo;
-        // td.setAttribute('onclick', 'change(this)');
+        //td.setAttribute('onclick', 'change(this)');
         td.onclick = () => change(td);
         tr.append(td);
       }
     }
+
     function countXO() {
       let tds = document.querySelectorAll('td');
       let numberXs = 0;
       let numberOs = 0;
+
       tds.forEach(td => {
         if (td.textContent == "X") numberXs++;
         else numberOs++;
-      });
-      document.getElementById('equis').textContent = numberXs;
-      document.getElementById('oes').textContent = numberOs;
+      })
+      document.getElementById("equis").textContent = numberXs;
+      document.getElementById("oes").textContent = numberOs;
     }
 
-    function change() {
-      cell.textContent = cell.textContent == "X" ? "0" : "X";
+    function change(cell) {
+      cell.textContent = cell.textContent == "X" ? "O" : "X";
+      // Comprobamos si la fila es del mismo simbolo.
+      let tr = cell.parentElement;
+      let tds = [...tr.children];
+      let firstXO = tds[0].textContent;
+      let index = tds.indexOf(cell);
+      // Comprobamos si toda la columna es del mismo simbolo
+      let column = document.querySelectorAll(`td:nth-child(${index + 1})`);
+      console.log("indice: ", index);
+      console.log(column);
+      if ([...column].every(td => td.textContent == cell.textContent)) {
+        [...column].forEach(td => td.remove());
+      }
+      if ([...tds].every(td => td.textContent == firstXO)) {
+        tr.remove();
+      }
+      // Fin comprobación
       countXO();
     }
 
   </script>
 </body>
 
-</html> -->
+</html>
